@@ -1,26 +1,21 @@
 {
     "name": "wxWidgets",
+    "rm-configure": true,
     "cleanup": [
         "/bin",
-        "/share/bakefile"
+        "/include",
+	"/lib/wx/include",
+        "/share/bakefile",
+        "/share/man",
+        "*.la",
+        "*.so"
     ],
     "config-opts": [
         "--with-gtk=3",
-        "--with-zlib",
-        "--with-regex=builtin",
-        "--with-libxpm=builtin",
-        "--with-libjpeg=builtin",
-        "--with-libtiff=builtin",
         "--disable-sdltest",
-        "--disable-precomp-headers",
-        "--enable-unicode",
-        "--enable-display",
-        "--enable-propgrid",
-        "--enable-debug_info",
-        "--enable-debug_gdb",
-        "--disable-debug",
-        "--disable-debug_flag",
-        "--with-expat=builtin"
+        "--disable-webkit",
+        "--disable-webview",
+        "--disable-webviewwebkit"
     ],
     "build-options": {
         "cxxflags": "-std=c++0x"
