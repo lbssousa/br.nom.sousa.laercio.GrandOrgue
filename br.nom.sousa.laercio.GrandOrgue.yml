@@ -1,0 +1,58 @@
+######################################################
+# Flatpak manifest example for Open Build Service
+# https://docs.flatpak.org/en/latest/manifests.html
+# Input should be YAML, even though the file can have
+# a .json suffix (JSON is a subset of YAML).
+# Don't use '//' comments!
+# Copied from https://github.com/flathub/org.gnome.Mahjongg
+######################################################
+
+# Special OBS field because flatpak does not have a version field
+# Default will be '0' if the field is missing.
+#!BuildVersion: 3.38.2
+---
+app-id: br.nom.sousa.laercio.GrandOrgue
+runtime: org.freedesktop.Platform
+sdk: org.freedesktop.Sdk
+runtime-version: '20.08'
+command: GrandOrgue
+rename-desktop-file: GrandOrgue.desktop
+
+finish-args:
+- --share=ipc
+- --socket=fallback-x11
+- --socket=wayland
+# Note playback
+- --socket=pulseaudio
+# PortAudio/MIDI
+- --device=all
+- --filesystem=home
+- --own-name=org.freedesktopReserveDevice1.*
+# JACK
+- --socket=system-bus
+- --filesystem=xdg-run/pipewire-0
+
+cleanup-commands:
+- rm -rf /app/include
+- rm -rf /app/lib/debug
+- rm -rf /app/lib/wx/include
+- rm -rf /app/share/pixmaps
+
+modules:
+- shared-modules/linux-audio/fftw3f.json
+- shared-modules/linux-audio/jack2.json
+- dependencies/wxWidgets.json
+- name: grandorgue
+  buildsystem: cmake
+  config-opts:
+  - -DCMAKE_INSTALL_PREFIX=/app
+  - -DCMAKE_SKIP_RPATH=ON
+  - -DVERSION_REVISION=2337
+  post-install:
+  - sed -i -e 's/Icon=GrandOrgue/Icon=br.nom.sousa.laercio.GrandOrgue/' /app/share/applications/GrandOrgue.desktop
+  - mkdir -p /app/share/icons/hicolor/32x32/apps
+  - mv /app/share/pixmaps/GrandOrgue.png /app/share/icons/hicolor/32x32/apps/br.nom.sousa.laercio.GrandOrgue.png
+  - mv /app/share/mime/packages/grandorgue.xml /app/share/mime/packages/br.nom.sousa.laercio.GrandOrgue.xml
+  sources:
+  - type: git
+    url: https://git.code.sf.net/p/ourorgan/code
